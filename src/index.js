@@ -23,10 +23,10 @@ const App = () => (
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/signup">Sign Up</Link>
+            <Link to="/login/signup">Sign Up</Link>
           </li>
           <li>
-            <Link to="/signin">Sign In</Link>
+            <Link to="/login/signin">Sign In</Link>
           </li>
           <li>
             <Link to="/CashFlowMaking">Determing Cash Flow</Link>
@@ -62,8 +62,8 @@ const App = () => (
         <h1>FAITHFUL</h1>
   
         <Route exact path="/" component={Home} />
-        <Route path="/signup" component={SignUp} />
-        <Route path="/signin" component={SignIn} />
+        <Route path="/login/signup" component={SignUp} />
+        <Route path="/login/signin" component={SignIn} />
         <Route path="/CashFlowMaking" component={CashFlowMaking} />
         <Route path="/CashFlowDaily" component={CashFlowDaily} />
         <Route path="/BillsPaid" component={BillsPaid} />

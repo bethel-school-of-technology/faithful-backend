@@ -17,6 +17,9 @@ var billspaidsRouter = require('./routes/billspaids');
 var savingsRouter = require('./routes/savings');
 var debtpayoffsRouter = require('./routes/debtpayoffs');
 var dreamsRouter = require('./routes/dreams');
+var cashRouter = require('./routes/cashflow');
+var loginRouter = require('./routes/login');
+
 
 var app = express();
 
@@ -38,6 +41,8 @@ app.use('/savings', savingsRouter);
 app.use('/billspaids', billspaidsRouter);
 app.use('/debtpayoffs', debtpayoffsRouter);
 app.use('/dreams', dreamsRouter);
+app.use('/cashflow', cashRouter);
+app.use('/login', loginRouter);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
