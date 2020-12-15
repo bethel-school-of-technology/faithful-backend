@@ -1,114 +1,120 @@
 var express = require('express');
 var router = express.Router();
-var BillsPaids = require('../models/BillsPaid');
+var BillsPaid = require('../models/BillsPaid');
 
 /* GET home page. */
 
 router.get('/', async function (req, res, next) {
-    try {
-        const billspaids = await BillsPaids.find();
-
-        res.status(200).json({
-            data: { billspaids }
-        });
-    } catch (err) {
-        res.status(404).json({
-            status: 'fail',
-            message: err
-        });
-    }
-});
-
-router.get('/:id', async function (req, res, next) {
-    try {
-      
-        const billspaid = await BillsPaid.findById(req.params.id);
-    
-        res.status(200).json({
-          data: { billspaid }
-        });
-      } catch (err) {
-        res.status(404).json({
-          status: 'fail',
-          message: err
-        });
-      }
-});
-
-
-router.post('./add', async function(req, res){
   try {
-    const newBillsPaid = await BillsPaid.create(req.body);
+    const billspaids = await BillsPaid.find();
 
-    res.status(201).json({
-      data: { billspaid: newBillsPaid }
+    res.status(200).json({
+      data: { billspaids }
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(404).json({
       status: 'fail',
       message: err
     });
   }
-
 });
 
 
 
 
-router.get('/update', async function (req, res) {
-    try {
-    const billspaid = await BillsPaid.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-      });
+router.post('/add', async function(req, res) {
+  try {
+      const newBillsPaid = await BillsPaid.create(req.body);
   
-      res.status(200).json({
-        status: 'success',
-        data: { billspaid }
+      res.status(201).json({
+        data: { BillsPaids: newBillsPaid }
       });
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+        message: err
+      });
+  };
+  });
+
+ 
+
+  router.get('/sums', async function (req, res) {
+    try {
+      const stats = await BillsPaid.aggregate([
+       
+        {
+          $group: {
+            _id: null,
+            sumweek1: { $sum: '$week1' }
+    /*       sumweek2: { $sum: '$week2' },
+            sumweek3: { $sum: '$week3' },
+            sumweek4: { $sum: '$week4' },
+          
+            numWeek1: { $sum: '$week1' } */
+          }
+        }
+      ]);
     } catch (err) {
       res.status(404).json({
         status: 'fail',
         message: err
       });
     }
-});
+  });
 
-router.get('/delete', async function (req, res, next) {
+  router.get('/:id', async function(req, res) {
     try {
-        await BillsPaid.findByIdAndDelete(req.params.id);
-        res.status(204).json({
-          status: 'success',
-          data: null
+  
+        const BillsPaids = await BillsPaid.findById(req.params.id);
+    
+        res.status(200).json({
+          data: { BillsPaids }
         });
       } catch (err) {
         res.status(404).json({
           status: 'fail',
           message: err
         });
-      }
-});
-
-router.get('/sums', async function (req, res) {
-    try {
-        const stats = await BillsPaid.aggregate([
-
-          {
-            $group: {
-              _id: null,
-              sumWeek1: { $sum: '$week1' },
-              sumWeek2: { $sum: '$week2' },
-              sumWeek3: { $sum: '$week3' },
-              sumWeek4: { $sum: '$week4' }
+      }    
+  });
+  
+  router.put('/update/:id', async function(req, res) {
+      try {
+          const BillsPaids = await BillsPaid.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+          });
+      
+          res.status(200).json({
+            data: { BillsPaids }
+          });
+        } catch (err) {
+          res.status(500).json({
+            status: 'fail',
+            message: err
+          });
+        }
+      });
+  
+      router.delete('/delete/:id', async function(req, res, next) {
+          try {
+              await BillsPaid.findByIdAndDelete(req.params.id);
+              res.status(204).json({
+                data: null
+              });
+            } catch (err) {
+              res.status(404).json({
+                status: 'fail',
+                message: err
+              });
             }
-          }
-        ]);
-      } catch (err) {
-        res.status(404).json({
-          status: 'fail',
-          message: err
-        });
-      }
-});
+          });        
+  
+
+
+
+
+
 
 module.exports = router;
